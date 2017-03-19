@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Video
+  m_Shader: {fileID: 4800000, guid: 07f5a8f5289b32245979ab54130524f6, type: 3}
+  m_ShaderKeywords: _KEYING
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Brightness: 0
+    - _Contrast: 1.02
+    - _DstMode: 0
+    - _Keying: 1
+    - _Mode: 0
+    - _Opacity: 1
+    - _Saturation: 0.6
+    - _SpillRemoval: 0.5
+    - _SrcMode: 1
+    - _Temperature: 0.5
+    - _Threshold: 0.4
+    - _Tint: -0.5
+    - _Tolerance: 0.7
+    - _ZWrite: 0
+    m_Colors:
+    - _ColorBalance: {r: 1.0150561, g: 1.0597312, b: 0.6972774, a: 0}
+    - _FadeToColor: {r: 0, g: 0, b: 0, a: 0}
+    - _KeyCgCo: {r: 0.11568627, g: -0.035294116, b: 0, a: 0}
+    - _KeyColor: {r: 0.37647063, g: 0.6431373, b: 0.44705886, a: 0}
