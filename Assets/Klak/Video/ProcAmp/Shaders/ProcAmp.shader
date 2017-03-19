@@ -27,8 +27,8 @@
         _Opacity("", Range(0, 1)) = 1
 
         // Blend mode control
-        [HideInInspector] _SrcMode("", Int) = 1
-        [HideInInspector] _DstMode("", Int) = 0
+        [HideInInspector] _SrcBlend("", Int) = 1
+        [HideInInspector] _DstBlend("", Int) = 0
         [HideInInspector] _ZWrite("", Int) = 1
     }
     SubShader

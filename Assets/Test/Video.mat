@@ -25,12 +25,14 @@ Material:
     m_Floats:
     - _Brightness: 0
     - _Contrast: 1.02
+    - _DstBlend: 10
     - _DstMode: 0
     - _Keying: 1
     - _Mode: 0
     - _Opacity: 1
     - _Saturation: 0.6
     - _SpillRemoval: 0.5
+    - _SrcBlend: 5
     - _SrcMode: 1
     - _Temperature: 0.5
     - _Threshold: 0.4
