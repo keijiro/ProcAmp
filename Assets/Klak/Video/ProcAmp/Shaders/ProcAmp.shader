@@ -18,8 +18,8 @@
         [Toggle(_KEYING)] _Keying("", Float) = 0
         [HideInInspector] _KeyColor("", Color) = (0, 1, 0, 0)
         _KeyCgCo("", Vector) = (0, 0, 0, 0)
-        _Threshold("", Range(0, 1)) = 0.5
-        _Tolerance("", Range(0, 1)) = 0.2
+        _KeyThreshold("", Range(0, 1)) = 0.5
+        _KeyTolerance("", Range(0, 1)) = 0.2
         _SpillRemoval("", Range(0, 1)) = 0.5
 
         // Final tweaks

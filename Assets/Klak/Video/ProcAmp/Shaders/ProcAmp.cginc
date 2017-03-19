@@ -10,8 +10,8 @@ half _Saturation;
 half4 _ColorBalance;
 
 half2 _KeyCgCo;
-half _Threshold;
-half _Tolerance;
+half _KeyThreshold;
+half _KeyTolerance;
 half _SpillRemoval;
 
 half4 _FadeToColor;   // given in gamma
@@ -74,7 +74,7 @@ half ChromaKeyAt(float2 uv)
     // Chroma distance
     half d = distance(ycgco.yz, _KeyCgCo) * 10;
 
-    return smoothstep(_Threshold, _Threshold + _Tolerance, d);
+    return smoothstep(_KeyThreshold, _KeyThreshold + _KeyTolerance, d);
 }
 
 // Main ProcAmp function
