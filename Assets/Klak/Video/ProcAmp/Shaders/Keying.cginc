@@ -26,6 +26,19 @@ fixed3 YCgCo2RGB(fixed3 ycgco)
         dot(ycgco, half3(1, -1, -1)));
 }
 
+fixed FetchAlpha(float2 uv)
+{
+    fixed3 src = tex2D(_MainTex, uv);
+    #if !defined(UNITY_COLORSPACE_GAMMA)
+    src = LinearToGammaSpace(src);
+    #endif
+    fixed3 src_ycgco = RGB2YCgCo(src);
+
+    // chroma-difference based alpha
+    half dist = distance(src_ycgco.yz, _CgCo);
+    return smoothstep(_Matte.x, _Matte.y, dist);
+}
+
 fixed4 FragKeying(v2f_img i) : SV_Target
 {
     fixed3 src = tex2D(_MainTex, i.uv);
@@ -34,9 +47,11 @@ fixed4 FragKeying(v2f_img i) : SV_Target
     #endif
     fixed3 src_ycgco = RGB2YCgCo(src);
 
-    // chroma-difference based alpha
-    half dist = distance(src_ycgco.yz, _CgCo);
-    half alpha = smoothstep(_Matte.x, _Matte.y, dist);
+    float4 duv = _MainTex_TexelSize.xyxy * float4(-0.5, -0.5, 0.5, 0.5);
+    fixed alpha =      FetchAlpha(i.uv + duv.xy);
+    alpha = min(alpha, FetchAlpha(i.uv + duv.zy));
+    alpha = min(alpha, FetchAlpha(i.uv + duv.xw));
+    alpha = min(alpha, FetchAlpha(i.uv + duv.zw));
 
     // Spill removal
     half2 cgco = src_ycgco.yz;

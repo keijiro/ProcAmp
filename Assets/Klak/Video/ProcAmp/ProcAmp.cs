@@ -200,7 +200,9 @@ namespace Klak.Video
                 ));
                 _material.SetFloat("_Spill", _spillRemoval);
                 Graphics.Blit(source, _buffer, _material, 2);
+                Graphics.Blit(_buffer, temp);
 
+/*
                 // Alpha dilate
                 Graphics.Blit(_buffer, temp, _material, 3);
 
@@ -211,6 +213,7 @@ namespace Klak.Video
                 // Alpha blur (vertical)
                 _material.SetVector("_BlurDir", Vector3.up);
                 Graphics.Blit(_buffer, temp, _material, 4);
+                */
             }
 
             // Adjustment
