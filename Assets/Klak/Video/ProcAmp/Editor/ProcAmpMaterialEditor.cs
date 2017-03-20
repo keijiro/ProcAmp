@@ -6,6 +6,9 @@ namespace Klak.Video
 {
     class ProcAmpMaterialEditor : ShaderGUI
     {
+        #region Private variables
+
+        // Serialized properties
         MaterialProperty _mainTex;
         MaterialProperty _brightness;
         MaterialProperty _contrast;
@@ -23,11 +26,17 @@ namespace Klak.Video
         MaterialProperty _fadeToColor;
         MaterialProperty _opacity;
 
+        // Labels used in the trim property
         static GUIContent[] _textsLTRB = {
             new GUIContent("L"), new GUIContent("T"),
             new GUIContent("R"), new GUIContent("B")
         };
 
+        #endregion
+
+        #region Overridden methods
+
+        // Inspector GUI function
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] props)
         {
             // These references should be updated every time :(
@@ -48,11 +57,21 @@ namespace Klak.Video
             _fadeToColor = FindProperty("_FadeToColor", props);
             _opacity = FindProperty("_Opacity", props);
 
-            ShaderPropertiesGUI(editor.target as Material, editor);
+            if (ShaderPropertiesGUI(editor.target as Material, editor))
+                foreach (var m in _mainTex.targets)
+                    UpdateHiddenProperties((Material)m);
         }
 
-        public void ShaderPropertiesGUI(Material material, MaterialEditor editor)
+        #endregion
+
+        #region Private methods
+
+        // GUI controls for properties
+        // Returns true if the hidden properties should be updated.
+        bool ShaderPropertiesGUI(Material material, MaterialEditor editor)
         {
+            bool dirty = false;
+
             editor.TexturePropertySingleLine(new GUIContent("Source"), _mainTex);
 
             EditorGUILayout.Space();
@@ -66,25 +85,14 @@ namespace Klak.Video
             EditorGUI.BeginChangeCheck();
             editor.ShaderProperty(_temperature, "Temperature");
             editor.ShaderProperty(_tint, "Tint (cyan-purple)");
-            if (EditorGUI.EndChangeCheck())
-            {
-                var balance = ProcAmp.CalculateColorBalance(
-                    _temperature.floatValue, _tint.floatValue
-                );
-                material.SetVector("_ColorBalance", balance);
-            }
+            dirty |= EditorGUI.EndChangeCheck();
 
             EditorGUILayout.Space();
 
-            editor.ShaderProperty(_keying, "Keying");
-
             EditorGUI.BeginChangeCheck();
+            editor.ShaderProperty(_keying, "Keying");
             editor.ShaderProperty(_keyColor, "Key Color");
-            if (EditorGUI.EndChangeCheck())
-            {
-                var ycgco = ProcAmp.RGB2YCgCo(_keyColor.colorValue);
-                material.SetVector("_KeyCgCo", new Vector2(ycgco.y, ycgco.z));
-            }
+            dirty |= EditorGUI.EndChangeCheck();
 
             if (_keying.floatValue > 0)
             {
@@ -97,13 +105,7 @@ namespace Klak.Video
 
             EditorGUI.BeginChangeCheck();
             Vector4Field(_trim, _textsLTRB, "Trim");
-            if (EditorGUI.EndChangeCheck())
-            {
-                var v = _trim.vectorValue;
-                material.SetVector("_TrimParams", new Vector4(
-                    v.x, v.w, 1 / (1 - v.x - v.z), 1 / (1 - v.y - v.w)
-                ));
-            }
+            dirty |= EditorGUI.EndChangeCheck();
 
             Vector2Field(_scale, "Scale");
             Vector2Field(_offset, "Offset");
@@ -111,9 +113,33 @@ namespace Klak.Video
             EditorGUILayout.Space();
 
             editor.ShaderProperty(_fadeToColor, "Fade To Color");
-            editor.ShaderProperty(_opacity, "Opacity");
 
-            if (_opacity.floatValue == 1 && _keying.floatValue == 0)
+            EditorGUI.BeginChangeCheck();
+            editor.ShaderProperty(_opacity, "Opacity");
+            dirty |= EditorGUI.EndChangeCheck();
+
+            return dirty;
+        }
+
+        // Update the hidden properties based on the exposed ones.
+        void UpdateHiddenProperties(Material material)
+        {
+            // Color balance
+            var temp = material.GetFloat("_Temperature");
+            var tint = material.GetFloat("_Tint");
+            material.SetVector("_ColorBalance", ProcAmp.CalculateColorBalance(temp, tint));
+
+            // Key color
+            var ycgco = ProcAmp.RGB2YCgCo(material.GetColor("_KeyColor"));
+            material.SetVector("_KeyCgCo", new Vector2(ycgco.y, ycgco.z));
+
+            // Trimming
+            var trim = material.GetVector("_Trim");
+            material.SetVector("_TrimParams", new Vector4(
+                trim.x, trim.w, 1 / (1 - trim.x - trim.z), 1 / (1 - trim.y - trim.w)
+            ));
+
+            if (material.GetFloat("_Opacity") == 1 && material.GetFloat("_Keying") == 0)
             {
                 // Opaque
                 material.SetInt("_SrcBlend", (int)BlendMode.One);
@@ -132,6 +158,10 @@ namespace Klak.Video
                 material.renderQueue = (int)RenderQueue.Transparent;
             }
         }
+
+        #endregion
+
+        #region Special GUI controls
 
         static void Vector2Field(MaterialProperty prop, string label)
         {
@@ -157,5 +187,7 @@ namespace Klak.Video
             if (EditorGUI.EndChangeCheck())
                 prop.vectorValue = new Vector4(fa[0], fa[1], fa[2], fa[3]);
         }
+
+        #endregion
     }
 }
