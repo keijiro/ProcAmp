@@ -109,6 +109,31 @@ namespace Klak.Video
 
         #endregion
 
+        #region Transform properties
+
+        [SerializeField] Vector4 _trim = Vector4.zero;
+
+        public Vector4 trim {
+            get { return _trim; }
+            set { _trim = value; }
+        }
+
+        [SerializeField] Vector2 _scale = Vector2.one;
+
+        public Vector2 scale {
+            get { return _scale; }
+            set { _scale = value; }
+        }
+
+        [SerializeField] Vector2 _offset = Vector2.zero;
+
+        public Vector2 offset {
+            get { return _offset; }
+            set { _offset = value; }
+        }
+
+        #endregion
+
         #region Final tweak properties
 
         [SerializeField] Color _fadeToColor = Color.clear;
@@ -255,6 +280,15 @@ namespace Klak.Video
             {
                 _material.DisableKeyword("_KEYING");
             }
+
+            // Transform
+            _material.SetVector("_TrimParams", new Vector4(
+                _trim.x, _trim.w,
+                1 / (1 - _trim.x - _trim.z),
+                1 / (1 - _trim.y - _trim.w)
+            ));
+            _material.SetVector("_Scale", _scale);
+            _material.SetVector("_Offset", _offset);
 
             // Final tweaks
             _material.SetVector("_FadeToColor", _fadeToColor);

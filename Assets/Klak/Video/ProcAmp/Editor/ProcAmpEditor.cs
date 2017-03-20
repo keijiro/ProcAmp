@@ -23,6 +23,10 @@ namespace Klak.Video
         SerializedProperty _keyTolerance;
         SerializedProperty _spillRemoval;
 
+        SerializedProperty _trim;
+        SerializedProperty _scale;
+        SerializedProperty _offset;
+
         SerializedProperty _fadeToColor;
         SerializedProperty _opacity;
 
@@ -33,6 +37,12 @@ namespace Klak.Video
         static GUIContent _textTint = new GUIContent("Tint (cyan-purple)");
         static GUIContent _textThreshold = new GUIContent("Threshold");
         static GUIContent _textTolerance = new GUIContent("Tolerance");
+        static GUIContent _textTrim = new GUIContent("Trim");
+
+        static GUIContent[] _textsLTRB = {
+            new GUIContent("L"), new GUIContent("T"),
+            new GUIContent("R"), new GUIContent("B")
+        };
 
         void OnEnable()
         {
@@ -51,6 +61,10 @@ namespace Klak.Video
             _keyThreshold = serializedObject.FindProperty("_keyThreshold");
             _keyTolerance = serializedObject.FindProperty("_keyTolerance");
             _spillRemoval = serializedObject.FindProperty("_spillRemoval");
+
+            _trim = serializedObject.FindProperty("_trim");
+            _scale = serializedObject.FindProperty("_scale");
+            _offset = serializedObject.FindProperty("_offset");
 
             _fadeToColor = serializedObject.FindProperty("_fadeToColor");
             _opacity = serializedObject.FindProperty("_opacity");
@@ -100,6 +114,12 @@ namespace Klak.Video
 
             EditorGUILayout.Space();
 
+            Vector4Field(_trim, _textsLTRB, _textTrim);
+            EditorGUILayout.PropertyField(_scale);
+            EditorGUILayout.PropertyField(_offset);
+
+            EditorGUILayout.Space();
+
             EditorGUILayout.PropertyField(_fadeToColor);
             EditorGUILayout.PropertyField(_opacity);
 
@@ -112,6 +132,15 @@ namespace Klak.Video
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        static void Vector4Field(SerializedProperty prop, GUIContent[] labels, GUIContent prefix)
+        {
+            var height = (EditorGUIUtility.wideMode ? 1 : 2) * EditorGUIUtility.singleLineHeight;
+            var rect = EditorGUILayout.GetControlRect(true, height);
+            var cur = prop.Copy();
+            cur.NextVisible(true);
+            EditorGUI.MultiPropertyField(rect, labels, cur, prefix);
         }
     }
 }

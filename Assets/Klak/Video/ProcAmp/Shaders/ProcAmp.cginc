@@ -14,6 +14,10 @@ half _KeyThreshold;
 half _KeyTolerance;
 half _SpillRemoval;
 
+float4 _TrimParams;
+float2 _Scale;
+float2 _Offset;
+
 half4 _FadeToColor;   // given in gamma
 half _Opacity;
 
@@ -138,9 +142,49 @@ half4 ProcAmp(float2 uv)
     // Fade to color
     rgb = lerp(rgb, _FadeToColor.rgb, _FadeToColor.a);
 
+    // Trimming
+    half2 ob = abs(floor((uv - _TrimParams.xy) * _TrimParams.zw));
+    half mask = saturate(1 - ob.x - ob.y);
+
     #if !defined(UNITY_COLORSPACE_GAMMA)
     rgb = GammaToLinearSpace(rgb);
     #endif
 
-    return half4(rgb, alpha * _Opacity);
+    return half4(rgb, alpha * _Opacity) * mask;
+}
+
+// Utilities for vertex shaders
+
+// UV coordinate transformation
+float2 TransformUV(float2 uv)
+{
+    return (uv - _Offset - 0.5) / _Scale + 0.5;
+}
+
+// Aspect ratio conversion coefficient
+float AspectConversion()
+{
+    float scr_aspect = _ScreenParams.y * (_ScreenParams.z - 1);
+    float tex_rcp_aspect = _MainTex_TexelSize.y * _MainTex_TexelSize.z;
+    return scr_aspect * tex_rcp_aspect;
+}
+
+float2 VertexAspectConversion()
+{
+    float coeff = AspectConversion();
+    return lerp(float2(coeff, 1), float2(1, 1 / coeff), coeff > 1);
+}
+
+float2 UVAspectConversion()
+{
+    float coeff = AspectConversion();
+    return lerp(float2(1 / coeff, 1), float2(1, coeff), coeff > 1);
+}
+
+// Move a quad to the near screen plane.
+float4 NearPlaneQuad(float4 vertex)
+{
+    float4 p = UnityViewToClipPos(float4(vertex.xy, -1, 1));
+    p.xy /= abs(p.xy);
+    return p;
 }

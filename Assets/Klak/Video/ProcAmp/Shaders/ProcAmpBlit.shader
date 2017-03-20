@@ -8,36 +8,6 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
         _DstBlend("", Int) = 0
     }
 
-    CGINCLUDE
-
-    #include "ProcAmp.cginc"
-
-    // Vertex shader for screen blit
-    v2f_img vert_screen(appdata_img v)
-    {
-        v2f_img o;
-
-        // Move the quad to the near screen plane.
-        o.pos = UnityViewToClipPos(float4(v.vertex.xy, -1, 1));
-        o.pos.xy /= abs(o.pos.xy);
-
-        // Aspect ratio adjustment (fit to the screen).
-        float scr_aspect = _ScreenParams.y * (_ScreenParams.z - 1);
-        float tex_rcp_aspect = _MainTex_TexelSize.y * _MainTex_TexelSize.z;
-        float aspect_fix = scr_aspect * tex_rcp_aspect;
-
-        if (aspect_fix > 1)
-            o.pos.y /= aspect_fix;
-        else
-            o.pos.x *= aspect_fix;
-
-        o.uv = v.texcoord;
-
-        return o;
-    }
-
-    ENDCG
-
     SubShader
     {
         Cull Off ZWrite Off ZTest Always
@@ -47,11 +17,21 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
         {
             CGPROGRAM
 
-            #pragma vertex vert_img
+            #pragma vertex vert
             #pragma fragment frag
 
             #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
             #pragma multi_compile _ _KEYING
+
+            #include "ProcAmp.cginc"
+
+            v2f_img vert(appdata_img v)
+            {
+                v2f_img o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv = TransformUV(v.texcoord);
+                return o;
+            }
 
             half4 frag(v2f_img i) : SV_Target
             {
@@ -68,11 +48,22 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
 
             CGPROGRAM
 
-            #pragma vertex vert_screen
+            #pragma vertex vert
             #pragma fragment frag
 
             #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
             #pragma multi_compile _ _KEYING
+
+            #include "ProcAmp.cginc"
+
+            v2f_img vert(appdata_img v)
+            {
+                v2f_img o;
+                o.pos = NearPlaneQuad(v.vertex);
+                o.pos.xy *= VertexAspectConversion();
+                o.uv = TransformUV(v.texcoord);
+                return o;
+            }
 
             half4 frag(v2f_img i) : SV_Target
             {
@@ -89,8 +80,19 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
 
             CGPROGRAM
 
-            #pragma vertex vert_screen
+            #pragma vertex vert
             #pragma fragment frag
+
+            #include "ProcAmp.cginc"
+
+            v2f_img vert(appdata_img v)
+            {
+                v2f_img o;
+                o.pos = NearPlaneQuad(v.vertex);
+                o.pos.xy *= VertexAspectConversion();
+                o.uv = v.texcoord;
+                return o;
+            }
 
             half4 frag(v2f_img i) : SV_Target
             {
@@ -105,28 +107,37 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
         {
             CGPROGRAM
 
-            #pragma vertex vert_img
+            #pragma vertex vert
             #pragma fragment frag
 
             #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
             #pragma multi_compile _ _KEYING
 
+            #include "ProcAmp.cginc"
+
             sampler2D _BaseTex;
-            float2 _AspectConv;
 
-            half4 frag(v2f_img i) : SV_Target
+            struct v2f
             {
-                // Aspect ratio conversion (fit to destination)
-                float2 uv = (i.uv - 0.5) * _AspectConv + 0.5;
+                float4 vertex : SV_POSITION;
+                float2 uv0 : TEXCOORD0;
+                float2 uv1 : TEXCOORD1;
+            };
 
-                // 0-1 range clipping
-                half mask = saturate(1 - dot(abs(floor(uv)), 1));
+            v2f vert(appdata_img v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv0 = TransformUV((v.texcoord - 0.5) * UVAspectConversion() + 0.5);
+                o.uv1 = v.texcoord;
+                return o;
+            }
 
-                // Composition
-                half4 c1 = tex2D(_BaseTex, i.uv);
-                half4 c2 = ProcAmp(uv);
-                half alpha = c2.a * mask;
-                return half4(lerp(c1.rgb, c2.rgb, alpha), alpha);
+            half4 frag(v2f i) : SV_Target
+            {
+                half4 cv = ProcAmp(i.uv0);
+                half4 cb = tex2D(_BaseTex, i.uv1);
+                return half4(lerp(cb.rgb, cv.rgb, cv.a), cv.a);
             }
 
             ENDCG

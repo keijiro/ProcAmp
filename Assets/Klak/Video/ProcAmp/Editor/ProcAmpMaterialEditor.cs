@@ -17,8 +17,16 @@ namespace Klak.Video
         MaterialProperty _keyThreshold;
         MaterialProperty _keyTolerance;
         MaterialProperty _spillRemoval;
+        MaterialProperty _trim;
+        MaterialProperty _scale;
+        MaterialProperty _offset;
         MaterialProperty _fadeToColor;
         MaterialProperty _opacity;
+
+        static GUIContent[] _textsLTRB = {
+            new GUIContent("L"), new GUIContent("T"),
+            new GUIContent("R"), new GUIContent("B")
+        };
 
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] props)
         {
@@ -34,6 +42,9 @@ namespace Klak.Video
             _keyThreshold = FindProperty("_KeyThreshold", props);
             _keyTolerance = FindProperty("_KeyTolerance", props);
             _spillRemoval = FindProperty("_SpillRemoval", props);
+            _trim = FindProperty("_Trim", props);
+            _scale = FindProperty("_Scale", props);
+            _offset = FindProperty("_Offset", props);
             _fadeToColor = FindProperty("_FadeToColor", props);
             _opacity = FindProperty("_Opacity", props);
 
@@ -84,10 +95,22 @@ namespace Klak.Video
 
             EditorGUILayout.Space();
 
-            editor.ShaderProperty(_fadeToColor, "Fade To Color");
+            EditorGUI.BeginChangeCheck();
+            Vector4Field(_trim, _textsLTRB, "Trim");
+            if (EditorGUI.EndChangeCheck())
+            {
+                var v = _trim.vectorValue;
+                material.SetVector("_TrimParams", new Vector4(
+                    v.x, v.w, 1 / (1 - v.x - v.z), 1 / (1 - v.y - v.w)
+                ));
+            }
+
+            Vector2Field(_scale, "Scale");
+            Vector2Field(_offset, "Offset");
 
             EditorGUILayout.Space();
 
+            editor.ShaderProperty(_fadeToColor, "Fade To Color");
             editor.ShaderProperty(_opacity, "Opacity");
 
             if (_opacity.floatValue == 1 && _keying.floatValue == 0)
@@ -108,6 +131,31 @@ namespace Klak.Video
                 material.SetOverrideTag("RenderType", "Transparent");
                 material.renderQueue = (int)RenderQueue.Transparent;
             }
+        }
+
+        static void Vector2Field(MaterialProperty prop, string label)
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            var newValue = EditorGUILayout.Vector2Field(label, prop.vectorValue);
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck()) prop.vectorValue = newValue;
+        }
+
+        static void Vector4Field(MaterialProperty prop, GUIContent[] labels, string prefix)
+        {
+            var height = (EditorGUIUtility.wideMode ? 1 : 2) * EditorGUIUtility.singleLineHeight;
+            var rect = EditorGUILayout.GetControlRect(true, height);
+
+            var v = prop.vectorValue;
+            var fa = new [] { v.x, v.y, v.z, v.w };
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            EditorGUI.MultiFloatField(rect, new GUIContent(prefix), labels, fa);
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck())
+                prop.vectorValue = new Vector4(fa[0], fa[1], fa[2], fa[3]);
         }
     }
 }

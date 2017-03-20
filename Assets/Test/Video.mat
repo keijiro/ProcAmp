@@ -24,23 +24,29 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Brightness: 0
-    - _Contrast: 1.02
+    - _Contrast: 1.1
     - _DstBlend: 10
     - _DstMode: 0
+    - _KeyThreshold: 0.35
+    - _KeyTolerance: 0.63
     - _Keying: 1
     - _Mode: 0
     - _Opacity: 1
-    - _Saturation: 0.6
-    - _SpillRemoval: 0.5
+    - _Saturation: 0.84
+    - _SpillRemoval: 0.73
     - _SrcBlend: 5
     - _SrcMode: 1
     - _Temperature: 0.5
     - _Threshold: 0.4
-    - _Tint: -0.5
+    - _Tint: 0.06
     - _Tolerance: 0.7
     - _ZWrite: 0
     m_Colors:
-    - _ColorBalance: {r: 1.0150561, g: 1.0597312, b: 0.6972774, a: 0}
+    - _ColorBalance: {r: 1.0504066, g: 0.99313897, b: 0.8191239, a: 0}
     - _FadeToColor: {r: 0, g: 0, b: 0, a: 0}
     - _KeyCgCo: {r: 0.11568627, g: -0.035294116, b: 0, a: 0}
     - _KeyColor: {r: 0.37647063, g: 0.6431373, b: 0.44705886, a: 0}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Scale: {r: 1, g: 1, b: 0, a: 0}
+    - _Trim: {r: 0, g: 0, b: 0, a: 0}
+    - _TrimParams: {r: 0, g: 0, b: 1, a: 1}

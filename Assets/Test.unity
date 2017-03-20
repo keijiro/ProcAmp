@@ -300,7 +300,7 @@ VideoPlayer:
   m_TargetTexture: {fileID: 0}
   m_TargetMaterialRenderer: {fileID: 34686058}
   m_TargetMaterialProperty: _MainTex
-  m_RenderMode: 4
+  m_RenderMode: 3
   m_AspectRatio: 2
   m_DataSource: 0
   m_PlaybackSpeed: 1
@@ -444,6 +444,9 @@ MonoBehaviour:
   _keyThreshold: 0.575
   _keyTolerance: 0.612
   _spillRemoval: 0.47
+  _trim: {x: 0, y: 0, z: 0, w: 0}
+  _scale: {x: 1, y: 1}
+  _offset: {x: 0, y: 0}
   _fadeToColor: {r: 0, g: 0, b: 0, a: 0}
   _opacity: 1
   _targetTexture: {fileID: 0}
@@ -689,6 +692,9 @@ MonoBehaviour:
   _keyThreshold: 0.575
   _keyTolerance: 0.612
   _spillRemoval: 0.47
+  _trim: {x: 0, y: 0, z: 0, w: 0}
+  _scale: {x: 1, y: 1}
+  _offset: {x: 0, y: 0}
   _fadeToColor: {r: 0, g: 0, b: 0, a: 0}
   _opacity: 1
   _targetTexture: {fileID: 0}

@@ -22,6 +22,12 @@
         _KeyTolerance("", Range(0, 1)) = 0.2
         _SpillRemoval("", Range(0, 1)) = 0.5
 
+        // Transform
+        _Trim("", Vector) = (0, 0, 0, 0)
+        [HideInInspector] _TrimParams("", Vector) = (0, 0, 0, 0)
+        _Scale("", Vector) = (1, 1, 1, 1)
+        _Offset("", Vector) = (0, 0, 0, 0)
+
         // Final tweaks
         [Gamma] _FadeToColor("", Color) = (0, 0, 0, 0)
         _Opacity("", Range(0, 1)) = 1
@@ -43,32 +49,21 @@
 
             #pragma vertex vert
             #pragma fragment frag
+
             #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
             #pragma shader_feature _KEYING
 
             #include "ProcAmp.cginc"
 
-            struct appdata
+            v2f_img vert(appdata_img v)
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float4 vertex : SV_POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            v2f vert(appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
+                v2f_img o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv = TransformUV(v.texcoord);
                 return o;
             }
 
-            half4 frag(v2f i) : SV_Target
+            half4 frag(v2f_img i) : SV_Target
             {
                 return ProcAmp(i.uv);
             }
