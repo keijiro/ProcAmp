@@ -362,7 +362,7 @@ namespace Klak.Video
 
         void OnRenderObject()
         {
-            if (!_blitToScreen || isImageEffect) return;
+            if (!_blitToScreen || isImageEffect || _material == null) return;
 
             // Use the simple blit pass when we already have a processed image.
             var processed = _buffer != null ? _buffer : _targetTexture;
@@ -384,7 +384,7 @@ namespace Klak.Video
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             var video = currentSource;
-            if (video != null)
+            if (video != null || _material == null)
             {
                 // Coefficients for aspect ratio conversion.
                 var screenAspect = (float)source.height / source.width;
