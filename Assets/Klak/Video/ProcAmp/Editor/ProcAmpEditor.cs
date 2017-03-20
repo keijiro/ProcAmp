@@ -26,6 +26,10 @@ namespace Klak.Video
         SerializedProperty _fadeToColor;
         SerializedProperty _opacity;
 
+        SerializedProperty _targetTexture;
+        SerializedProperty _targetImage;
+        SerializedProperty _blitToScreen;
+
         static GUIContent _textTint = new GUIContent("Tint (cyan-purple)");
         static GUIContent _textThreshold = new GUIContent("Threshold");
         static GUIContent _textTolerance = new GUIContent("Tolerance");
@@ -50,6 +54,10 @@ namespace Klak.Video
 
             _fadeToColor = serializedObject.FindProperty("_fadeToColor");
             _opacity = serializedObject.FindProperty("_opacity");
+
+            _targetTexture = serializedObject.FindProperty("_targetTexture");
+            _targetImage = serializedObject.FindProperty("_targetImage");
+            _blitToScreen = serializedObject.FindProperty("_blitToScreen");
         }
 
         public override void OnInspectorGUI()
@@ -92,6 +100,12 @@ namespace Klak.Video
 
             EditorGUILayout.PropertyField(_fadeToColor);
             EditorGUILayout.PropertyField(_opacity);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(_targetTexture);
+            EditorGUILayout.PropertyField(_targetImage);
+            EditorGUILayout.PropertyField(_blitToScreen);
 
             serializedObject.ApplyModifiedProperties();
         }

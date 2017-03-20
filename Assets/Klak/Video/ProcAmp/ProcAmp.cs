@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.Rendering;
 
 namespace Klak.Video
 {
+    [ExecuteInEditMode]
     public class ProcAmp : MonoBehaviour
     {
         #region Video source properties
@@ -124,6 +127,31 @@ namespace Klak.Video
 
         #endregion
 
+        #region Destination properties
+
+        [SerializeField] RenderTexture _targetTexture;
+
+        public RenderTexture targetTexture {
+            get { return _targetTexture; }
+            set { _targetTexture = value; }
+        }
+
+        [SerializeField] RawImage _targetImage;
+
+        public RawImage targetImage {
+            get { return _targetImage; }
+            set { _targetImage = value; }
+        }
+
+        [SerializeField] bool _blitToScreen = true;
+
+        public bool blitToScreen {
+            get { return _blitToScreen; }
+            set { _blitToScreen = value; }
+        }
+
+        #endregion
+
         #region Public utility functions (shared with the editor code)
 
         // YCgCo color space conversion
@@ -178,33 +206,27 @@ namespace Klak.Video
 
         [SerializeField, HideInInspector] Shader _shader;
         [SerializeField, HideInInspector] Mesh _quadMesh;
+        [SerializeField, HideInInspector] Texture _offlineTexture;
 
         Material _material;
         RenderTexture _buffer;
 
-        #endregion
-
-        #region MonoBehaviour functions
-
-        void Start()
-        {
-            _material = new Material(_shader);
+        Texture currentSource {
+            get {
+                if (Application.isPlaying)
+                    if (_sourceVideo != null)
+                        return _sourceVideo.texture;
+                    else
+                        return _sourceTexture;
+                else
+                    return _offlineTexture;
+            }
         }
 
-        void OnDestroy()
+        void UpdateMaterialProperties()
         {
-            if (_buffer != null) RenderTexture.ReleaseTemporary(_buffer);
-        }
-
-        void Update()
-        {
-            if (_buffer != null) RenderTexture.ReleaseTemporary(_buffer);
-            _buffer = null;
-
-            var source = _sourceVideo != null ? _sourceVideo.texture : _sourceTexture;
-            if (source == null) return;
-
-            _buffer = RenderTexture.GetTemporary(source.width, source.height);
+            // Input
+            _material.SetTexture("_MainTex", currentSource);
 
             // Basic adjustment
             _material.SetFloat("_Brightness", _brightness);
@@ -234,13 +256,87 @@ namespace Klak.Video
             _material.SetVector("_FadeToColor", _fadeToColor);
             _material.SetFloat("_Opacity", _opacity);
 
-            Graphics.Blit(source, _buffer, _material, 0);
+            // Blend mode
+            if (_keying || _opacity < 1)
+            {
+                _material.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+                _material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+            }
+            else
+            {
+                _material.SetInt("_SrcBlend", (int)BlendMode.One);
+                _material.SetInt("_DstBlend", (int)BlendMode.Zero);
+            }
+        }
+
+        #endregion
+
+        #region MonoBehaviour functions
+
+        void OnDestroy()
+        {
+            if (_material != null)
+                if (Application.isPlaying)
+                    Destroy(_material);
+                else
+                    DestroyImmediate(_material);
+        }
+
+        void Update()
+        {
+            // Material instantiation.
+            if (_material == null)
+            {
+                _material = new Material(_shader);
+                _material.hideFlags = HideFlags.DontSave;
+            }
+
+            // Material update.
+            UpdateMaterialProperties();
+
+            // Release previous frames.
+            if (_buffer != null) RenderTexture.ReleaseTemporary(_buffer);
+            _buffer = null;
+
+            // Do nothing if no source is given.
+            var source = currentSource;
+            if (source == null) return;
+
+            // Determine the destination.
+            var dest = _targetTexture;
+            if (dest == null)
+            {
+                if (_targetImage == null) return; // No target, do nothing.
+                // Allocate an internal temporary buffer.
+                _buffer = RenderTexture.GetTemporary(source.width, source.height);
+                dest = _buffer;
+            }
+
+            // Invoke the ProcAmp shader.
+            Graphics.Blit(source, dest, _material, 0);
+
+            // Update the UI image target.
+            if (_targetImage != null) _targetImage.texture = dest;
         }
 
         void OnRenderObject()
         {
-            _material.SetTexture("_MainTex", _buffer);
-            _material.SetPass(_keying || _opacity < 1 ? 2 : 1);
+            if (!_blitToScreen) return;
+
+            // Use the simple blit pass when we already have a processed image.
+            var processed = _buffer != null ? _buffer : _targetTexture;
+            if (processed != null)
+            {
+                _material.SetTexture("_MainTex", processed);
+                _material.SetPass(2);
+            }
+            else
+            {
+                // Blit with ProcAmp pass
+                _material.SetTexture("_MainTex", currentSource);
+                _material.SetPass(1);
+            }
+
             Graphics.DrawMeshNow(_quadMesh, Matrix4x4.identity);
         }
 
