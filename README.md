@@ -6,6 +6,8 @@ component.
 
 - Brightness, contrast, saturation.
 - White balance (color temperature & color tint)
+- Trim, scale, offset.
+- Fade to a color, opacity control.
 
 It also provides basic keying effects.
 
