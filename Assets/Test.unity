@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &34686058
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -410,7 +410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1578524838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,15 +425,15 @@ MonoBehaviour:
   _sourceVideo: {fileID: 327541312}
   _sourceTexture: {fileID: 0}
   _brightness: 0
-  _contrast: 1
-  _saturation: 1
-  _temperature: 0
-  _tint: 0
-  _keying: 0
-  _keyColor: {r: 0, g: 1, b: 0, a: 1}
-  _keyThreshold: 0.5
-  _keyTolerance: 0.2
-  _spillRemoval: 0.5
+  _contrast: 1.02
+  _saturation: 0.69
+  _temperature: 0.1
+  _tint: -0.07
+  _keying: 1
+  _keyColor: {r: 0.34509805, g: 0.6431373, b: 0.43529415, a: 1}
+  _keyThreshold: 0.575
+  _keyTolerance: 0.612
+  _spillRemoval: 0.47
   _fadeToColor: {r: 0, g: 0, b: 0, a: 0}
   _opacity: 1
   _shader: {fileID: 4800000, guid: fba7492978666a044b5985682ffa5cb5, type: 3}
