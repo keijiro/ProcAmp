@@ -211,6 +211,10 @@ namespace Klak.Video
         Material _material;
         RenderTexture _buffer;
 
+        bool isImageEffect {
+            get { return GetComponent<Camera>() != null; }
+        }
+
         Texture currentSource {
             get {
                 if (Application.isPlaying)
@@ -298,6 +302,9 @@ namespace Klak.Video
             if (_buffer != null) RenderTexture.ReleaseTemporary(_buffer);
             _buffer = null;
 
+            // Do nothing here if image effect mode.
+            if (isImageEffect) return;
+
             // Do nothing if no source is given.
             var source = currentSource;
             if (source == null) return;
@@ -321,7 +328,7 @@ namespace Klak.Video
 
         void OnRenderObject()
         {
-            if (!_blitToScreen) return;
+            if (!_blitToScreen || isImageEffect) return;
 
             // Use the simple blit pass when we already have a processed image.
             var processed = _buffer != null ? _buffer : _targetTexture;
@@ -338,6 +345,31 @@ namespace Klak.Video
             }
 
             Graphics.DrawMeshNow(_quadMesh, Matrix4x4.identity);
+        }
+
+        void OnRenderImage(RenderTexture source, RenderTexture destination)
+        {
+            var video = currentSource;
+            if (video != null)
+            {
+                // Coefficients for aspect ratio conversion.
+                var screenAspect = (float)source.height / source.width;
+                var textureAspect = (float)video.height / video.width;
+                var aspectConv = screenAspect / textureAspect;
+                if (aspectConv > 1)
+                    _material.SetVector("_AspectConv", new Vector2(1, aspectConv));
+                else
+                    _material.SetVector("_AspectConv", new Vector2(1 / aspectConv, 1));
+
+                // Composite with the source.
+                _material.SetTexture("_BaseTex", source);
+                Graphics.Blit(video, destination, _material, 3);
+            }
+            else
+            {
+                // Do nothing because the video source is not ready.
+                Graphics.Blit(source, destination);
+            }
         }
 
         #endregion

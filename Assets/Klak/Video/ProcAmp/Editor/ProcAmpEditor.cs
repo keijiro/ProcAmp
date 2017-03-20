@@ -64,6 +64,8 @@ namespace Klak.Video
         {
             serializedObject.Update();
 
+            var procAmp = (ProcAmp)target;
+
             var showBoth = _sourceVideo.hasMultipleDifferentValues |
                            _sourceTexture.hasMultipleDifferentValues;
 
@@ -101,11 +103,13 @@ namespace Klak.Video
             EditorGUILayout.PropertyField(_fadeToColor);
             EditorGUILayout.PropertyField(_opacity);
 
-            EditorGUILayout.Space();
-
-            EditorGUILayout.PropertyField(_targetTexture);
-            EditorGUILayout.PropertyField(_targetImage);
-            EditorGUILayout.PropertyField(_blitToScreen);
+            if (procAmp.GetComponent<Camera>() == null)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.PropertyField(_targetTexture);
+                EditorGUILayout.PropertyField(_targetImage);
+                EditorGUILayout.PropertyField(_blitToScreen);
+            }
 
             serializedObject.ApplyModifiedProperties();
         }

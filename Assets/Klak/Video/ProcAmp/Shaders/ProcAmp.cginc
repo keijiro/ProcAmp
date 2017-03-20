@@ -83,7 +83,7 @@ half4 ProcAmp(float2 uv)
     half4 src = tex2D(_MainTex, uv);
     half3 rgb = src.rgb;
 
-#if _KEYING
+#if defined(_KEYING)
 
     #if !defined(UNITY_COLORSPACE_GAMMA)
     rgb = LinearToGammaSpace(rgb);

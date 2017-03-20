@@ -43,7 +43,7 @@
 
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile UNITY_COLORSPACE_GAMMA
+            #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
             #pragma shader_feature _KEYING
 
             #include "ProcAmp.cginc"

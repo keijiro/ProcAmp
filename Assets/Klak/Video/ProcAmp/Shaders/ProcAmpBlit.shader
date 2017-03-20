@@ -3,6 +3,7 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
     Properties
     {
         _MainTex("", 2D) = "gray" {}
+        _BaseTex("", 2D) = "gray" {}
         _SrcBlend("", Int) = 1
         _DstBlend("", Int) = 0
     }
@@ -22,8 +23,8 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
 
         // Aspect ratio adjustment (fit to the screen).
         float scr_aspect = _ScreenParams.y * (_ScreenParams.z - 1);
-        float tex_aspect = _MainTex_TexelSize.y * _MainTex_TexelSize.z;
-        float aspect_fix = tex_aspect * scr_aspect;
+        float tex_rcp_aspect = _MainTex_TexelSize.y * _MainTex_TexelSize.z;
+        float aspect_fix = scr_aspect * tex_rcp_aspect;
 
         if (aspect_fix > 1)
             o.pos.y /= aspect_fix;
@@ -49,8 +50,8 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
             #pragma vertex vert_img
             #pragma fragment frag
 
-            #pragma multi_compile UNITY_COLORSPACE_GAMMA
-            #pragma multi_compile _KEYING
+            #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
+            #pragma multi_compile _ _KEYING
 
             half4 frag(v2f_img i) : SV_Target
             {
@@ -70,8 +71,8 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
             #pragma vertex vert_screen
             #pragma fragment frag
 
-            #pragma multi_compile UNITY_COLORSPACE_GAMMA
-            #pragma multi_compile _KEYING
+            #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
+            #pragma multi_compile _ _KEYING
 
             half4 frag(v2f_img i) : SV_Target
             {
@@ -94,6 +95,38 @@ Shader "Hidden/Klak/Video/ProcAmp Blit"
             half4 frag(v2f_img i) : SV_Target
             {
                 return tex2D(_MainTex, i.uv);
+            }
+
+            ENDCG
+        }
+
+        // ProcAmp as an image effect
+        Pass
+        {
+            CGPROGRAM
+
+            #pragma vertex vert_img
+            #pragma fragment frag
+
+            #pragma multi_compile _ UNITY_COLORSPACE_GAMMA
+            #pragma multi_compile _ _KEYING
+
+            sampler2D _BaseTex;
+            float2 _AspectConv;
+
+            half4 frag(v2f_img i) : SV_Target
+            {
+                // Aspect ratio conversion (fit to destination)
+                float2 uv = (i.uv - 0.5) * _AspectConv + 0.5;
+
+                // 0-1 range clipping
+                half mask = saturate(1 - dot(abs(floor(uv)), 1));
+
+                // Composition
+                half4 c1 = tex2D(_BaseTex, i.uv);
+                half4 c2 = ProcAmp(uv);
+                half alpha = c2.a * mask;
+                return half4(lerp(c1.rgb, c2.rgb, alpha), alpha);
             }
 
             ENDCG

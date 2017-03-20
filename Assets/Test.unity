@@ -125,7 +125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &24766080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,7 +300,7 @@ VideoPlayer:
   m_TargetTexture: {fileID: 0}
   m_TargetMaterialRenderer: {fileID: 34686058}
   m_TargetMaterialProperty: _MainTex
-  m_RenderMode: 3
+  m_RenderMode: 4
   m_AspectRatio: 2
   m_DataSource: 0
   m_PlaybackSpeed: 1
@@ -343,6 +343,7 @@ GameObject:
   - component: {fileID: 347202050}
   - component: {fileID: 347202049}
   - component: {fileID: 347202048}
+  - component: {fileID: 347202052}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -420,6 +421,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &347202052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 347202046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6340f3f997b9424b88bf87bae7ff08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sourceVideo: {fileID: 327541312}
+  _sourceTexture: {fileID: 0}
+  _brightness: 0
+  _contrast: 1.02
+  _saturation: 0.69
+  _temperature: 0.1
+  _tint: -0.07
+  _keying: 1
+  _keyColor: {r: 0.34509805, g: 0.6431373, b: 0.43529415, a: 1}
+  _keyThreshold: 0.575
+  _keyTolerance: 0.612
+  _spillRemoval: 0.47
+  _fadeToColor: {r: 0, g: 0, b: 0, a: 0}
+  _opacity: 1
+  _targetTexture: {fileID: 0}
+  _targetImage: {fileID: 0}
+  _blitToScreen: 0
+  _shader: {fileID: 4800000, guid: fba7492978666a044b5985682ffa5cb5, type: 3}
+  _quadMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  _offlineTexture: {fileID: 2800000, guid: 84e27a62f23c2074fa3fff1f147cbc94, type: 3}
 --- !u!1 &842858257
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,7 +665,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1578524838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,8 +692,8 @@ MonoBehaviour:
   _fadeToColor: {r: 0, g: 0, b: 0, a: 0}
   _opacity: 1
   _targetTexture: {fileID: 0}
-  _targetImage: {fileID: 842858259}
-  _blitToScreen: 0
+  _targetImage: {fileID: 0}
+  _blitToScreen: 1
   _shader: {fileID: 4800000, guid: fba7492978666a044b5985682ffa5cb5, type: 3}
   _quadMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   _offlineTexture: {fileID: 2800000, guid: 84e27a62f23c2074fa3fff1f147cbc94, type: 3}
