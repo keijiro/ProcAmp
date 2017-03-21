@@ -311,6 +311,12 @@ namespace Klak.Video
 
         #region MonoBehaviour functions
 
+        void Reset()
+        {
+            // Auto assign the VideoPlayer component if there is one.
+            _sourceVideo = GetComponent<VideoPlayer>();
+        }
+
         void OnDestroy()
         {
             if (_material != null)
