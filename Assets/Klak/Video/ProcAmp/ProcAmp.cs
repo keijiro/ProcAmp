@@ -390,7 +390,7 @@ namespace Klak.Video
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             var video = currentSource;
-            if (video != null || _material == null)
+            if (video != null && _material != null)
             {
                 // Coefficients for aspect ratio conversion.
                 var screenAspect = (float)source.height / source.width;
