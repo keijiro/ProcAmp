@@ -8,12 +8,11 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Video
   m_Shader: {fileID: 4800000, guid: 07f5a8f5289b32245979ab54130524f6, type: 3}
-  m_ShaderKeywords: _KEYING
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -24,28 +23,28 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Brightness: 0
-    - _Contrast: 1.1
-    - _DstBlend: 10
+    - _Contrast: 1.05
+    - _DstBlend: 0
     - _DstMode: 0
-    - _KeyThreshold: 0.185
-    - _KeyTolerance: 0.427
-    - _Keying: 1
+    - _KeyThreshold: 0.5
+    - _KeyTolerance: 0.6
+    - _Keying: 0
     - _Mode: 0
     - _Opacity: 1
-    - _Saturation: 0.84
-    - _SpillRemoval: 0.73
-    - _SrcBlend: 5
+    - _Saturation: 1
+    - _SpillRemoval: 0.5
+    - _SrcBlend: 1
     - _SrcMode: 1
-    - _Temperature: 0.53
+    - _Temperature: 0.1
     - _Threshold: 0.4
-    - _Tint: 0.09
+    - _Tint: -0.07
     - _Tolerance: 0.7
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
-    - _ColorBalance: {r: 1.055281, g: 0.99027365, b: 0.8151357, a: 0}
-    - _FadeToColor: {r: 0, g: 0, b: 0, a: 0}
-    - _KeyCgCo: {r: 0.115686275, g: -0.03529413, b: 0, a: 0}
-    - _KeyColor: {r: 0.37647063, g: 0.6431373, b: 0.44705886, a: 0}
+    - _ColorBalance: {r: 1.0047029, g: 1.0062339, b: 0.9394056, a: 0}
+    - _FadeToColor: {r: 0.9558824, g: 0.5554975, b: 0.12651381, a: 0}
+    - _KeyCgCo: {r: 0.12647061, g: -0.045098037, b: 0, a: 0}
+    - _KeyColor: {r: 0.34509805, g: 0.6431373, b: 0.43529415, a: 0}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _Scale: {r: 1, g: 1, b: 0, a: 0}
     - _Trim: {r: 0, g: 0, b: 0, a: 0}
