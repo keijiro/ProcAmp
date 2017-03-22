@@ -1,6 +1,8 @@
 ProcAmp
 =======
 
+![screenshot](http://i.imgur.com/XKOCrvt.png)
+
 ![gif](http://i.imgur.com/Oy0Zrff.gif)
 
 **ProcAmp** is a utility shader for adjusting videos. It's developed for
@@ -22,6 +24,7 @@ Available Functionalities
 - White balance (temperature and cyan-purple tint).
 - Chroma keying and spill removal.
 - Basic transform (trimming, scaling and position offset).
+- Color overlay (fade to a given color)
 
 Implementation
 --------------
