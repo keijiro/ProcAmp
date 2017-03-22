@@ -1,7 +1,9 @@
 ProcAmp
 =======
 
-**ProcAmp** is a utility shader for tweaking video frames. It's developed for
+![gif](http://i.imgur.com/Oy0Zrff.gif)
+
+**ProcAmp** is a utility shader for adjusting videos. It's developed for
 providing optional functionalities of video playback with the [VideoPlayer]
 component that is newly introduced in Unity 5.6.
 
