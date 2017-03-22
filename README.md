@@ -98,6 +98,16 @@ License
 
 [MIT]
 
+Acknowledgement
+---------------
+
+The footage used in the example is originally created by LaBeouf, Rönkkö and
+Turner. That work was released under a Creative Commons Attribution Non-
+Commercial Share-Alike licence. See Acknowledgement.txt for further details.
+
+- "\#INTRODUCTIONS" by LaBeouf, Rönkkö & Turner
+  https://vimeo.com/125095515
+
 [VideoPlayer]: https://docs.unity3d.com/560/Documentation/Manual/VideoPlayer.html
 [Issues]: https://github.com/keijiro/ProcAmp/issues
 [RawImage]: https://docs.unity3d.com/Manual/script-RawImage.html
