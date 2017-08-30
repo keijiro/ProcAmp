@@ -137,7 +137,7 @@ half4 ProcAmp(float2 uv)
 
     // Saturation
     half l = dot(rgb, half3(0.2126, 0.7152, 0.0722));
-    rgb = saturate(lerp(l, rgb, _Saturation));
+    rgb = saturate(lerp((half3)l, rgb, _Saturation));
 
     // Fade to color
     rgb = lerp(rgb, _FadeToColor.rgb, _FadeToColor.a);
