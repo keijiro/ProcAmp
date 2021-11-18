@@ -97,11 +97,6 @@ The ProcAmp component works as an image effect when it's attached to a camera
 object. It overlays the resulting video onto the screen with fit-to-screen
 scaling.
 
-License
--------
-
-[MIT]
-
 Acknowledgement
 ---------------
 
